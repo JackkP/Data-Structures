@@ -7,40 +7,6 @@
 
 using namespace std;
 
-//node class for binary expression tree
-class Bnode {
-	public:
-		Bnode(char* token);
-		~Bnode();
-		SetRight(Bnode* n);
-		SetLeft(Bnode* n);
-		Bnode* GetRight();
-		Bnode* GetLeft();
-	private:
-		char* Token;
-		Bnode* Right;
-		Bnode* Left;
-
-};
-
-//constructor
-Bnode::Bnode(char* token){
-	Token = token;
-	Right, Left = NULL;
-}
-//destructor
-Bnode::~Bnode(){
-	delete Token;
-}
-//set right pointer
-Bnode::SetRight(Bnode* n){ Right = n; }
-//set left pointer
-Bnode::SetLeft(Bnode* n){ Left = n; }
-//get right pointer
-Bnode* Bnode::GetRight(){ return Right; }
-//get left pointer
-Bnode* Bnode::GetLeft(){ return Left; }
-
 struct Node{ //node class for stack and queue functions
 	Node* next;
 	char* token;
@@ -49,32 +15,32 @@ struct Node{ //node class for stack and queue functions
 
 //functions for stack
 //add a pointer to the front of the list (top of stack)
-void Push(Node* & head, Node* n){
+void push(Node* & head, Node* n){
 	n->next = head;
 	head = n;
 }
 
 //remove node from the top of the stack
-Node* Pop(Node* & head){
+Node* pop(Node* & head){
 	Node* n = head;
 	head = head->next;
 	return n;
 }
 
 //return the head pointer... why is this a function
-Node* Peek(Node* head){
+Node* peek(Node* head){
 	return head;
 }
 
 //functions for queue
 //add a node at the end using recurion
-void Enqueue(Node* & head, Node* n){
+void enqueue(Node* & head, Node* n){
 	if(!head) { head = n; }
-	Enqueue(head->next, n);
+	enqueue(head->next, n);
 }
 
 //remove the head pointer and return it (since the head is the front of the queue)
-Node* Dequeue(Node* & head){
+Node* dequeue(Node* & head){
 	if (head){
 		Node* n = head;
 		head = head->next;
@@ -85,7 +51,7 @@ Node* Dequeue(Node* & head){
 
 int main(){
 	
-	cout << "Shunting Yard Algorithm! << endl;
+	cout << "Shunting Yard Algorithm!" << endl;
 	while (true) {
 		//formatting
 		cout << "=====================================================" << endl;
@@ -97,6 +63,13 @@ int main(){
 		
 		cout << "=====================================================" << endl;
 		
+		if(strcmp(next, "quit") == 0){
+			break
+		}
+		
+		else{
+			
+		}
 
 
 
