@@ -48,24 +48,59 @@ struct Node{ //node class for stack and queue functions
 };
 
 //functions for stack
-void Push(Node* head, Node* n){
+//add a pointer to the front of the list (top of stack)
+void Push(Node* & head, Node* n){
 	n->next = head;
 	head = n;
 }
-Node* Pop(Node* head){
-	Node* n = n
-	head = head
-	return n
+
+//remove node from the top of the stack
+Node* Pop(Node* & head){
+	Node* n = head;
+	head = head->next;
+	return n;
 }
+
+//return the head pointer... why is this a function
 Node* Peek(Node* head){
 	return head;
 }
 
 //functions for queue
-void Enqueue();
-Node* Dequeue();
+//add a node at the end using recurion
+void Enqueue(Node* & head, Node* n){
+	if(!head) { head = n; }
+	Enqueue(head->next, n);
+}
+
+//remove the head pointer and return it (since the head is the front of the queue)
+Node* Dequeue(Node* & head){
+	if (head){
+		Node* n = head;
+		head = head->next;
+		return n;
+	}
+	return NULL;
+}
 
 int main(){
 	
+	cout << "Shunting Yard Algorithm! << endl;
+	while (true) {
+		//formatting
+		cout << "=====================================================" << endl;
+		cout << "Functions: (, ), +, -, *, /, and ^\nInput an equation to start! or type 'quit' to quit" << endl;
+		
+		char next[100];
+		cin.get(next, 100);
+		cin.get();
+		
+		cout << "=====================================================" << endl;
+		
+
+
+
+	}
+
 	return 0;
 }
