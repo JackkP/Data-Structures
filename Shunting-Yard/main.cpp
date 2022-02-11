@@ -4,6 +4,9 @@
 
 #include <iostream>
 #include <cstring>
+#include "Bnode.h"
+#include "Stack.h"
+#include "Queue.h"
 
 using namespace std;
 
@@ -13,6 +16,7 @@ struct Node{ //node class for stack and queue functions
 
 };
 
+/*
 //functions for stack
 //add a pointer to the front of the list (top of stack)
 void push(Node* & head, Node* n){
@@ -48,6 +52,8 @@ Node* dequeue(Node* & head){
 	}
 	return NULL;
 }
+*/
+
 
 int main(){
 	

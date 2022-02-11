@@ -6,7 +6,7 @@ using namespace std;
 //node class for binary expression tree
 class Bnode {
         public:
-                btnode(char* token);
+                Bnode(char* token);
                 ~Bnode();
                 void SetRight(Bnode* n);
                 void SetLeft(Bnode* n);

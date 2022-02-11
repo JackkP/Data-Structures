@@ -1,4 +1,4 @@
-#include "BNODE.H"
+#include "Bnode.h"
 
 using namespace std;
 
