@@ -1,3 +1,7 @@
+/* Jack Porter, C++ Data Structures, February 2022
+ * Queue class for Shunting Yard Algorithm
+ */
+
 #include "Queue.h"
 
 Queue::Queue(Node* h){
@@ -17,13 +21,18 @@ void Queue::deleteNext(Node* n){
 
 //functions for queue
 //add a node at the end using recursion
+void Queue::enqueueAfter(Node* & h, Node* n){
+	if(!h) { h = n; }
+	enqueueAfter(h->next, n);
+
+}
 void Queue::enqueue(Node* n){
 	if(!head) { head = n; }
-	enqueue(head->next, n);
+	enqueueAfter(head->next, n);
 }
 
 //remove the head pointer and return it (since the head is the front of the queue)
-Queue::dequeue(){
+Node* Queue::dequeue(){
 	if (head){
 		Node* n = head;
 		head = head->next;

@@ -1,3 +1,8 @@
+/* Jack Porter, C++ Data Structures, February 2022
+ * Stack Class for Shunting Yard Algorithm
+ */
+
+
 #include "Stack.h"
 
 using namespace std;
@@ -5,9 +10,11 @@ using namespace std;
 Stack::Stack(Node* h){
 	head = h;
 }
+
 Stack::~Stack(){
 	deleteNext(head);
 }
+
 Stack::deleteNext(Node* n){
 	if(n) { //if this pointer is not null
 		deleteNext(n->next); //delete the one after it

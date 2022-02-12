@@ -1,8 +1,9 @@
 /* Jack Porter, C++ Data Structures, Febuary 2022
- * Stack class
- * Shunting yard algorithm
+ * Stack class for Shunting yard algorithm
  */
 
+#ifndef QUEUE_H
+#define QUEUE_H
 #include <iostream>
 #include <cstring>
 
@@ -26,5 +27,8 @@ class Queue{
 	private:
 		Node* head;
 		void deleteNext(Node* n);
+		void enqueueAfter(Node* & h, Node* n);
 
-};	
+};
+
+#endif

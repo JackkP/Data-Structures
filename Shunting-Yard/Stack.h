@@ -2,19 +2,15 @@
  * Stack Class for Shunting Yard Algorithm
  */
 
+#ifndef STACK_H
+#define STACK_H
+
 #include <iostream>
 #include <cstring>
+#include "Queue.h" //using node struct from queue class
+
 
 using namespace std;
-
-struct Node{ //node class for stack and queue functions
-        Node* next;
-        char* token;
-	~Node(){ //destructor used to delete node when calling queue destructor
-		delete token;
-	}
-
-};
 
 class Stack{
 	public:
@@ -27,3 +23,5 @@ class Stack{
 		Node* head;
 		deleteNext(Node* n);
 };
+
+#endif

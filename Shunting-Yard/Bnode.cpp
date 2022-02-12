@@ -1,3 +1,7 @@
+/* Jack Porter, C++ Data Structures, February 2022
+ * Binary tree node for Shunting Yard Algorithm
+ */
+
 #include "Bnode.h"
 
 using namespace std;

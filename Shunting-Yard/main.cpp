@@ -6,54 +6,9 @@
 #include <cstring>
 #include "Bnode.h"
 #include "Stack.h"
-#include "Queue.h"
+//#include "Queue.h"
 
 using namespace std;
-
-struct Node{ //node class for stack and queue functions
-	Node* next;
-	char* token;
-
-};
-
-/*
-//functions for stack
-//add a pointer to the front of the list (top of stack)
-void push(Node* & head, Node* n){
-	n->next = head;
-	head = n;
-}
-
-//remove node from the top of the stack
-Node* pop(Node* & head){
-	Node* n = head;
-	head = head->next;
-	return n;
-}
-
-//return the head pointer... why is this a function
-Node* peek(Node* head){
-	return head;
-}
-
-//functions for queue
-//add a node at the end using recurion
-void enqueue(Node* & head, Node* n){
-	if(!head) { head = n; }
-	enqueue(head->next, n);
-}
-
-//remove the head pointer and return it (since the head is the front of the queue)
-Node* dequeue(Node* & head){
-	if (head){
-		Node* n = head;
-		head = head->next;
-		return n;
-	}
-	return NULL;
-}
-*/
-
 
 int main(){
 	
@@ -70,7 +25,7 @@ int main(){
 		cout << "=====================================================" << endl;
 		
 		if(strcmp(next, "quit") == 0){
-			break
+			break;
 		}
 		
 		else{
