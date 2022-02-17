@@ -23,12 +23,11 @@ void Queue::deleteNext(Node* n){
 //add a node at the end using recursion
 void Queue::enqueueAfter(Node* & h, Node* n){
 	if(!h) { h = n; }
-	enqueueAfter(h->next, n);
-
+	else enqueueAfter(h->next, n);
 }
 void Queue::enqueue(Node* n){
-	if(!head) { head = n; }
-	enqueueAfter(head->next, n);
+	if(head == 0) { head = n; }
+	else enqueueAfter(head->next, n);
 }
 
 //remove the head pointer and return it (since the head is the front of the queue)
