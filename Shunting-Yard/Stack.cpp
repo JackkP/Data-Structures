@@ -7,8 +7,8 @@
 
 using namespace std;
 
-Stack::Stack(Node* h){
-	head = h;
+Stack::Stack(){
+	head = NULL;
 }
 
 Stack::~Stack(){

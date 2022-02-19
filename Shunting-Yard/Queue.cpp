@@ -4,8 +4,8 @@
 
 #include "Queue.h"
 
-Queue::Queue(Node* h){
-	head = h;
+Queue::Queue(){
+	head = NULL;
 }
 
 Queue::~Queue(){
@@ -26,7 +26,8 @@ void Queue::enqueueAfter(Node* & h, Node* n){
 	else enqueueAfter(h->next, n);
 }
 void Queue::enqueue(Node* n){
-	if(head == 0) { head = n; }
+	n->next = NULL; //this is to make sure that there are no accidental loops
+	if(!head) { head = n; }
 	else enqueueAfter(head->next, n);
 }
 

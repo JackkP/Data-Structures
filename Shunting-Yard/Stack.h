@@ -7,14 +7,14 @@
 
 #include <iostream>
 #include <cstring>
-#include "Queue.h" //using node struct from queue class
+#include "Node.h"
 
 
 using namespace std;
 
 class Stack{
 	public:
-		Stack(Node* h);
+		Stack();
 		~Stack();
 		void push(Node* n);
 		Node* pop();

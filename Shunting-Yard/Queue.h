@@ -6,21 +6,13 @@
 #define QUEUE_H
 #include <iostream>
 #include <cstring>
+#include "Node.h"
 
 using namespace std;
 
-struct Node{
-	Node* next;
-	char* token;
-	
-	~Node(){ //destructor used to delete node when calling queue destructor
-		delete token;
-	}
-};
-
 class Queue{
 	public:
-		Queue(Node* h);
+		Queue();
 		~Queue();
 		void enqueue(Node* n);
 		Node* dequeue();
