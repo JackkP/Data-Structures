@@ -17,11 +17,13 @@ class Stack{
 		Stack();
 		~Stack();
 		void push(Node* n);
+		void print();
 		Node* pop();
 		Node* peek();
 	private:
 		Node* head;
-		deleteNext(Node* n);
+		void printNext(Node* n);
+		void deleteNext(Node* n);
 };
 
 #endif

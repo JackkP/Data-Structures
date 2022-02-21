@@ -15,7 +15,21 @@ Stack::~Stack(){
 	deleteNext(head);
 }
 
-Stack::deleteNext(Node* n){
+
+void Stack::print(){ //debug function
+	//cout << "head/top to tail/bottom: ";
+	printNext(head);
+	cout << endl;
+}
+
+void Stack::printNext(Node* n){ //recursive print
+	if(n){
+		cout << " " << n->token;
+		printNext(n->next);
+	}
+}
+
+void Stack::deleteNext(Node* n){
 	if(n) { //if this pointer is not null
 		deleteNext(n->next); //delete the one after it
 		delete n; //delete it
@@ -32,7 +46,7 @@ void Stack::push(Node* n){
 //remove node from the top of the stack
 Node* Stack::pop(){
         Node* n = head;
-        head = head->next;
+        if (head) head = head->next;
         return n;
 }
 

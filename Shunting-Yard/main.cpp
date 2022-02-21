@@ -1,5 +1,6 @@
 /* Jack Porter, C++ Data Structures, Febuary 2022
  * Shunting yard algorithm
+ * there are lots of very long lines, read this in full screen with small font
  */
 
 #include <iostream>
@@ -17,7 +18,6 @@ int main(){
 	//map to map character to its type
 	//throws out_of_range if key character is not found
 	map<char, int> type;
-	
 	type.insert(pair<char, int>('0', 0));
 	type.insert(pair<char, int>('1', 0));
 	type.insert(pair<char, int>('2', 0));
@@ -36,6 +36,16 @@ int main(){
 	type.insert(pair<char, int>('^', 5));
 	type.insert(pair<char, int>('(', 6));
 	type.insert(pair<char, int>(')', 7));
+
+	map<char, int> precedence;
+	precedence.insert(pair<char, int>('(', 0));
+	precedence.insert(pair<char, int>(')', 0));
+	precedence.insert(pair<char, int>('+', 2));
+	precedence.insert(pair<char, int>('-', 2));
+	precedence.insert(pair<char, int>('*', 3));
+	precedence.insert(pair<char, int>('/', 3));
+	precedence.insert(pair<char, int>('^', 4));
+
 
 	cout << "Shunting Yard Algorithm!" << endl;
 	while (true) {
@@ -70,6 +80,8 @@ int main(){
 				/* Tokenizer: works by walking through input array and starting a new token every time
 				 * there is a change in character type.
 				 * This can handle unary "-" signs by checking if they come after an operator.
+				 * Unary "-" operators are just merged into the numebers they
+				 * preceed instead of doing it the right way
 				 */
 				int curType = 0;
 				int prevType = 0;
@@ -114,9 +126,11 @@ int main(){
 				 * copy the queue, then transfer back and delet copy
 				 */
 				cout << "Infix notation: ";
-				Queue temp;
-				Node* n = inQ.dequeue();
-				while(n){
+				
+
+				//Queue temp;
+				Node* n; // = inQ.dequeue();
+				/*while(n){
 					cout << n->token << " ";
 					temp.enqueue(n);
 					n = inQ.dequeue();
@@ -126,11 +140,153 @@ int main(){
 				while(n){
 					inQ.enqueue(n);
 					n = temp.dequeue();
-				}
+				}*/
+				
+				inQ.print();
 			
 
-				//run the shunting yard
+				/* Shunting Yard Algorithm
+				 * from https://en.wikipedia.org/wiki/Shunting-yard_algorithm
+				 */
+
+				/* while there are tokens to be read:
+				 * read a token
+				 * if the token is:
+				 *   - a number:
+				 *   	put it into the output queue
+				 *   - a function:
+				 *   	push it onto the operator stack 
+				 *   - an operator o1:
+				 *   	while (
+				 *   	   there is an operator o2 other than the left parenthesis at the top
+				 *   	   of the operator stack, and (o2 has greater precedence than o1
+				 *   	   or they have the same precedence and o1 is left-associative)
+				 *   	):
+				 *  	   pop o2 from the operator stack into the output queue
+				 *  	push o1 onto the operator stack
+				 *   - a left parenthesis (i.e. "("):
+				 *   	push it onto the operator stack
+				 *   - a right parenthesis (i.e. ")"):
+        			 *	while the operator at the top of the operator stack is not a left parenthesis:
+				 *	   {assert the operator stack is not empty}
+            			 *	   $$ If the stack runs out without finding a left parenthesis, 
+				 *	   $$ then there are mismatched parentheses.
+          			 *	   pop the operator from the operator stack into the output queue
+        			 *	{assert there is a left parenthesis at the top of the operator stack}
+				 *	pop the left parenthesis from the operator stack and discard it
+				 *	if there is a function token at the top of the operator stack, then:
+				 *		pop the function from the operator stack into the output queue
+				 * $$ After the while loop, pop the remaining items from the operator stack
+				 * $$ into the output queue.
+				 * while there are tokens on the operator stack:
+				 * 	$$ If the operator token on the top of the stack is a parenthesis, 
+				 * 	$$ then there are mismatched parentheses.
+				 * 	{assert the operator on top of the stack is not a (left) parenthesis}
+				 * 	pop the operator from the operator stack onto the output queue 
+	    			 */
 				
+				Queue outQ; //should be dynamic or static?
+				Stack opS;
+				
+				cout << "opS: ";
+				opS.print();
+				cout << "inQ: ";
+				inQ.print();
+				cout << "outQ: ";
+				outQ.print();
+
+				n = inQ.dequeue();
+				while(n){
+					switch (type.at(n->token[strlen(n->token)-1])){
+						case (0): {// a number, push it to the output stack
+							outQ.enqueue(n);
+							break;
+						}
+						case (1): // an operator,
+						case (2):
+						case (3):
+						case (4):
+						case (5): {
+							cout << "Token is an operator" << endl;
+							while (opS.peek()) {
+								// if the token on top of the operator stack has a higher precedence than the current operator and is left associative (not ^)
+								
+								try { cout << "precedence.at(opS.peek()->token[0]): " << precedence.at(opS.peek()->token[0]) << endl; } 
+								catch (...) { cout << "failure of precedence.at(opS.peek()->token[0]), opS.peek()->token[0]: " << opS.peek()->token[0]  << endl; }
+								
+								try { cout << "precedence.at(n->token[0]): " << precedence.at(n->token[0]) << endl; } 
+								catch (...) { cout << "failure of precedence.at(n.peek()->token[0])" << endl; }
+
+
+
+
+								if(precedence.at(opS.peek()->token[0]) >= precedence.at(n->token[0]) && type.at(opS.peek()->token[0]) == 5){
+									outQ.enqueue(opS.pop()); //push it to the output queue
+								}
+								else {
+									break;
+								}
+							}
+							opS.push(n); //push the operator to the operator stack
+							break;
+						}
+						case (6): { // a left parenthesis "(", push to the operator stack
+							opS.push(n);
+							break;
+						}
+						case (7): { //a right parenthesis ")", 
+							Node* stktp = opS.pop();
+							bool parenMismatch = true;
+							while (stktp) {
+								// if the token on top of the operator stack has a higher precedence than the current operator
+								if(type.at(stktp->token[0]) != 6){ //if the token is not a left parenthesis push it to output stack
+									outQ.enqueue(stktp);
+								}
+								else {
+									parenMismatch = false; //found a right parenthesis
+									break;
+								}
+								stktp = opS.pop();
+							}
+							if(parenMismatch) throw;
+							break;
+						}
+					}
+					cout << "==============\nopS: ";
+					opS.print();
+					cout << "inQ: ";
+					inQ.print();
+					cout << "outQ: ";
+					outQ.print();
+
+					n = inQ.dequeue();
+					if (n) cout << "Next token: " << n->token << endl;
+				}
+				cout << "successfully ran shunting yard" << endl;
+				n = opS.pop();
+				while (n){
+					//if(type.at(n->token[0] == 6 || type.at(n->token[0]) == 7)) throw; //parenthesis mismatch
+					outQ.enqueue(n);
+					n = opS.pop();
+				}
+				
+				cout << "Postfix notation: ";
+				
+				outQ.print();
+
+				/*n = outQ.dequeue();
+				while(n){
+					cout << n->token << " ";
+					temp.enqueue(n);
+					n = outQ.dequeue();
+				}
+				cout << endl;
+				n = temp.dequeue();
+				while(n){
+					outQ.enqueue(n);
+					n = temp.dequeue();
+				}*/
+
 				//print prefix infix postfix
 				
 				//evaluate and print

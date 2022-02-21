@@ -16,8 +16,10 @@ class Queue{
 		~Queue();
 		void enqueue(Node* n);
 		Node* dequeue();
+		void print();
 	private:
 		Node* head;
+		void printNext(Node* n);
 		void deleteNext(Node* n);
 		void enqueueAfter(Node* & h, Node* n);
 
