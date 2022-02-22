@@ -38,8 +38,8 @@ int main(){
 	type.insert(pair<char, int>(')', 7));
 
 	map<char, int> precedence;
-	precedence.insert(pair<char, int>('(', 0));
-	precedence.insert(pair<char, int>(')', 0));
+	precedence.insert(pair<char, int>('(', 0));//even though parenthesis are not operators, they are given lowest
+	precedence.insert(pair<char, int>(')', 0));//precedence since they are compared with other operators
 	precedence.insert(pair<char, int>('+', 2));
 	precedence.insert(pair<char, int>('-', 2));
 	precedence.insert(pair<char, int>('*', 3));
@@ -120,29 +120,10 @@ int main(){
 					}
 				}
 				
-
-
-				/* Print in infix notation: walk through queue,
-				 * copy the queue, then transfer back and delet copy
-				 */
 				cout << "Infix notation: ";
+				Node* n = NULL;
 				
-
-				//Queue temp;
-				Node* n; // = inQ.dequeue();
-				/*while(n){
-					cout << n->token << " ";
-					temp.enqueue(n);
-					n = inQ.dequeue();
-				}
-				cout << endl;
-				n = temp.dequeue();
-				while(n){
-					inQ.enqueue(n);
-					n = temp.dequeue();
-				}*/
-				
-				inQ.print();
+				inQ.print(); //print the infix notation
 			
 
 				/* Shunting Yard Algorithm
@@ -188,12 +169,12 @@ int main(){
 				Queue outQ; //should be dynamic or static?
 				Stack opS;
 				
-				cout << "opS: ";
+				/*cout << "opS: ";
 				opS.print();
 				cout << "inQ: ";
 				inQ.print();
 				cout << "outQ: ";
-				outQ.print();
+				outQ.print();*/
 
 				n = inQ.dequeue();
 				while(n){
@@ -207,25 +188,12 @@ int main(){
 						case (3):
 						case (4):
 						case (5): {
-							cout << "Token is an operator" << endl;
 							while (opS.peek()) {
-								// if the token on top of the operator stack has a higher precedence than the current operator and is left associative (not ^)
-								
-								try { cout << "precedence.at(opS.peek()->token[0]): " << precedence.at(opS.peek()->token[0]) << endl; } 
-								catch (...) { cout << "failure of precedence.at(opS.peek()->token[0]), opS.peek()->token[0]: " << opS.peek()->token[0]  << endl; }
-								
-								try { cout << "precedence.at(n->token[0]): " << precedence.at(n->token[0]) << endl; } 
-								catch (...) { cout << "failure of precedence.at(n.peek()->token[0])" << endl; }
-
-
-
-
-								if(precedence.at(opS.peek()->token[0]) >= precedence.at(n->token[0]) && type.at(opS.peek()->token[0]) == 5){
+								// if the token on top of the operator stack has a higher precedence than the current operator and token n is left associative (not ^)
+								if(precedence.at(opS.peek()->token[0]) >= precedence.at(n->token[0]) && type.at(n->token[0]) != 5){
 									outQ.enqueue(opS.pop()); //push it to the output queue
 								}
-								else {
-									break;
-								}
+								else break; 
 							}
 							opS.push(n); //push the operator to the operator stack
 							break;
@@ -252,20 +220,18 @@ int main(){
 							break;
 						}
 					}
-					cout << "==============\nopS: ";
+					/*cout << "==============\nopS: ";
 					opS.print();
 					cout << "inQ: ";
-					inQ.print();
-					cout << "outQ: ";
-					outQ.print();
-
+					inQ.print(); */
 					n = inQ.dequeue();
-					if (n) cout << "Next token: " << n->token << endl;
+					/*cout << "outQ: ";
+					outQ.print();
+					if (n) cout << "Next token: " << n->token << endl;*/
 				}
-				cout << "successfully ran shunting yard" << endl;
 				n = opS.pop();
 				while (n){
-					//if(type.at(n->token[0] == 6 || type.at(n->token[0]) == 7)) throw; //parenthesis mismatch
+					if(type.at(n->token[0]) == 6 || type.at(n->token[0]) == 7) { throw; } //parenthesis mismatch
 					outQ.enqueue(n);
 					n = opS.pop();
 				}
@@ -286,6 +252,8 @@ int main(){
 					outQ.enqueue(n);
 					n = temp.dequeue();
 				}*/
+
+
 
 				//print prefix infix postfix
 				
