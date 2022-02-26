@@ -7,20 +7,24 @@
 using namespace std;
 
 //constructor
-Bnode::Bnode(char* token){
-        Token = token;
-        Right, Left = NULL;
+Bnode::Bnode(char* tkn){
+        token = tkn;
+        right = NULL;
+	left = NULL;
 }
 //destructor
 Bnode::~Bnode(){
-        delete Token;
+        delete token;
 }
 //set right pointer
-void Bnode::SetRight(Bnode* n){ Right = n; }
+void Bnode::setRight(Bnode* n){ right = n; }
 //set left pointer
-void Bnode::SetLeft(Bnode* n){ Left = n; }
+void Bnode::setLeft(Bnode* n){ left = n; }
 //get right pointer
-Bnode* Bnode::GetRight(){ return Right; }
+Bnode* Bnode::getRight(){ return right; }
 //get left pointer
-Bnode* Bnode::GetLeft(){ return Left; }
-
+Bnode* Bnode::getLeft(){ return left; }
+//set token
+void Bnode::setToken(char* c){ token = c; }
+//get token
+char* Bnode::getToken(){ return token; }

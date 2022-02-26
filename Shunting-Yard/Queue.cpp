@@ -12,6 +12,13 @@ Queue::~Queue(){
 	deleteNext(head); //recursively delete all remaining nodes in the queue
 }
 
+void Queue::deleteNext(Node* n){
+	if(n) { //if this pointer is not null
+		deleteNext(n->next); //delete the one after it
+		delete n; //delete it
+	}
+}
+
 void Queue::print(){ //debug function
 	//cout << "head/front to tail/back: ";
 	printNext(head);
@@ -22,13 +29,6 @@ void Queue::printNext(Node* n){ //recursive print
 	if(n){
 		cout << " " << n->token;
 		printNext(n->next);
-	}
-}
-
-void Queue::deleteNext(Node* n){
-	if(n) { //if this pointer is not null
-		deleteNext(n->next); //delete the one after it
-		delete n; //delete it
 	}
 }
 

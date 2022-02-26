@@ -1,6 +1,8 @@
 /* Jack Porter, C++ Data Structures, February 2022
  * Binary tree node for Shunting Yard Algorithm
  */
+#ifndef BNODE_H
+#define BNODE_H
 
 #include <iostream>
 #include <cstring>
@@ -12,14 +14,18 @@ class Bnode {
         public:
                 Bnode(char* token);
                 ~Bnode();
-                void SetRight(Bnode* n);
-                void SetLeft(Bnode* n);
-                Bnode* GetRight();
-                Bnode* GetLeft();
+                void setRight(Bnode* n);
+                void setLeft(Bnode* n);
+                Bnode* getRight();
+                Bnode* getLeft();
+		void setToken(char* c);
+		char* getToken();
+
         private:
-                char* Token;
-                Bnode* Right;
-                Bnode* Left;
+                char* token;
+                Bnode* right;
+                Bnode* left;
 
 };
 
+#endif
