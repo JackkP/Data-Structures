@@ -17,7 +17,6 @@ using namespace std;
 Queue* tokenize(char* input); //tokenizer
 Queue* shuntingYard(Queue* inQ); //function that actually runs the shunting yard algorithm
 Bnode* binaryTree(Queue* inQ); //convert postfix to a binary tree
-void printBinTree(Bnode* n); //print a binary tree in a sort of pretty way
 void printPrefix(Bnode* n);
 void printInfix(Bnode* n);
 void printPostfix(Bnode* n);
@@ -49,6 +48,7 @@ int main(){
 	type.insert(pair<char, int>('^', 5));
 	type.insert(pair<char, int>('(', 6));
 	type.insert(pair<char, int>(')', 7));
+	type.insert(pair<char, int>(' ', 8)); //spaces to be ignored, can handle everything but starting with a space
 	
 	precedence.insert(pair<char, int>('(', 0));//even though parenthesis are not operators, they are given lowest
 	precedence.insert(pair<char, int>(')', 0));//precedence since they are compared with other operators
@@ -81,8 +81,8 @@ int main(){
 				//tokenize the input string
 				Queue* inQ = tokenize(next);
 				
-				// cout << "Infix notation: "; //for debugging
-				// inQ->print();
+				//cout << "Infix notation: "; //for debugging
+				//inQ->print();
 				
 				//run the shunting yard alogrithm on the tokenized input
 				Queue* outQ = shuntingYard(inQ);
@@ -91,18 +91,16 @@ int main(){
 				// outQ->print();
 				
 				//convert it to a binary tree
-				Bnode* outputTreeHead = binaryTree(outQ);
+				Bnode* opTHead = binaryTree(outQ);
 				
 				cout << "Prefix: ";
-				printPrefix(outputTreeHead);
-				cout << endl << "Infix: ";
-				printInfix(outputTreeHead);
+				printPrefix(opTHead);
 				cout << endl << "Postfix: ";
-				printPostfix(outputTreeHead);
-				cout << endl;
+				printPostfix(opTHead);
+				cout << endl << endl;
 				
-				//evaluate and print
-				cout << "Evalueates to: " << evaluate(outputTreeHead) << endl;
+				printInfix(opTHead);
+				cout << "= " << evaluate(opTHead) << endl;;
 			}
 			catch (...) {
 				cout << "not a valid expression" << endl;
@@ -120,6 +118,7 @@ Queue* tokenize(char* input){
 	 * Unary "-" operators are just merged into the numebers they
 	 * preceed instead of doing it the right way (this is cheating but its fine).
 	 */
+
 	Queue* inQ = new Queue();
 
 	int curType = 0;
@@ -141,7 +140,7 @@ Queue* tokenize(char* input){
 	if (type.at(input[0]) == 2) { //if the first sign is unary minus sign
 		curType = 0; 	//consider it part of a multi-digit number
 	}
-	else curType = type.at(input[0]);
+	else curType = 0;
 	
 	for(int i = 1; i < strlen(input); i++){ //starting with the second character
 		if(type.at(input[i]) != curType && !(prevType>=1 && prevType <=5 && type.at(input[i]) == 0 && curType == 2)){ //if the character does not match the previous character token type and is not a unary minus following an operator
@@ -215,11 +214,10 @@ Queue* shuntingYard(Queue* inQ) {//function that actually runs the shunting yard
 	 * 	{assert the operator on top of the stack is not a (left) parenthesis}
 	 * 	pop the operator from the operator stack onto the output queue 
 	 */
-
-	Queue* outQ = new Queue; //migrate to static if i make functions
+	Queue* outQ = new Queue;
 	Stack opS;
-	
-	/*cout << "opS: ";
+
+	/*cout << "opS: "; //debug code
 	opS.print();
 	cout << "inQ: ";
 	inQ.print();
@@ -270,15 +268,18 @@ Queue* shuntingYard(Queue* inQ) {//function that actually runs the shunting yard
 				break;
 			}
 		}
-		/*cout << "==============\nopS: "; // Debug code
-		opS.print();
-		cout << "inQ: ";
-		inQ.print(); */
+		//cout << "==============\nopS: "; // Debug code
+		//opS.print();
+		//cout << "inQ: ";
+		//inQ.print();
+		
 		n = inQ->dequeue();
-		/*cout << "outQ: ";
-		outQ.print();
-		if (n) cout << "Next token: " << n->token << endl;*/
+		
+		//cout << "outQ: "; //debug code
+		//outQ.print();
+		//if (n) cout << "Next token: " << n->token << endl;
 	}
+
 	n = opS.pop();
 	while (n){ //move all tokens on the operator stack to the output queue
 	if(type.at(n->token[0]) == 6 || type.at(n->token[0]) == 7) { throw; } //parenthesis mismatch
@@ -305,18 +306,13 @@ Bnode* binaryTree(Queue* inQ){ //convert postfix to a binary tree
 
 	Stack numStk; //temporary stack
 	
-	//cout << "building tree" << endl;
 	Node* n = inQ->dequeue();
 	while (n) {
-		//cout << "n->token: " << n->token << endl;
 		if (type.at(n->token[strlen(n->token)-1]) == 0) { //the token is a number
-			//cout << "token is a number" << endl;
 			Node* newN = new Node(); //create a new node for the temporary stack
 		
 			Bnode* b = new Bnode(n->token); //create a new node and add that to the stack
 			newN->bnode = b;
-			
-			//cout << "newN->bnode->getToken(): " << newN->bnode->getToken() << endl;
 			
 			numStk.push(newN);
 			n->token = NULL; //delete the old node
@@ -342,10 +338,6 @@ Bnode* binaryTree(Queue* inQ){ //convert postfix to a binary tree
 			left->bnode = NULL; //delete old node
 			delete left;
 			
-			//cout << "newN->bnode->getToken(): " << newN->bnode->getToken() << endl;
-			//if(newN->bnode->getRight()->getToken()) cout << "newN->bnode->getRight()->getToken(): " << newN->bnode->getRight()->getToken();
-			//if(newN->bnode->getRight()->getToken()) cout << "  newN->bnode->getLeft()->getToken(): " << newN->bnode->getLeft()->getToken() << endl;
-
 			numStk.push(newN); //push this new node back onto the stack
 		}
 		n = inQ->dequeue();
@@ -354,7 +346,6 @@ Bnode* binaryTree(Queue* inQ){ //convert postfix to a binary tree
 	Bnode* outputTreeHead = n->bnode;
 	n->bnode = NULL; //delete old node
 	delete n;
-	printBinTree(outputTreeHead); 
 	return outputTreeHead;
 
 }
@@ -423,14 +414,4 @@ float evaluate(Bnode* n){
 		case 5: // ^
 			return pow(evaluate(n->getLeft()), evaluate(n->getRight()));
 	}
-}
-
-//haha what an abomination
-int getDepth(Bnode* n){ if(n) { int a = getDepth(n->getRight()); int b = getDepth(n->getLeft()); if (a >=b){ return a+1; } else { return b+1; }} return 0;}
-
-void printBinTree(Bnode* n){ //print a binary tree in a sort of pretty way
-	int depth = getDepth(n);
-	cout << "depth: " << depth << endl;
-	
-		
 }
