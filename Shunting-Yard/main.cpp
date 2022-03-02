@@ -362,7 +362,7 @@ void printInfix(Bnode* n){ //need to deal with precedence for operators so that 
 	if (n) {
 		if (type.at(n->getToken()[strlen(n->getToken())-1]) > 0) { //if the token is an operator
 			if (type.at(n->getLeft()->getToken()[strlen(n->getLeft()->getToken())-1]) > 0) {//left token is an operator
-				if (precedence.at(n->getToken()[0]) > precedence.at(n->getLeft()->getToken()[0])){ //|| type.at(n->getToken()[0]) == 2){ //operator has a higher precedence than the left operator or is a minus
+				if (precedence.at(n->getToken()[0]) > precedence.at(n->getLeft()->getToken()[0])){ //operator has a higher precedence than the left operator or is a minus
 					cout << "( "; //left side needs parenthesis
 					printInfix(n->getLeft());
 					cout << ") ";
