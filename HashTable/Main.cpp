@@ -105,7 +105,7 @@ struct HashTable { //hash table class (very big struct)
 		}
 		else { //otherwise rehash and try again
 			rehash();
-			add(s);
+			return add(s);
 		}
 	}
 
