@@ -6,6 +6,7 @@
 #define HEAP_H
 #include <iostream>
 #include <cstring>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -14,11 +15,18 @@ class Heap{
 		Heap();
 		~Heap();
 		void print();
-		int getNext();
-		void add(int val);
+		int peek();
+		int pop();
+		bool push(int val);
 
 	private:
+		int size();
+		void siftUp(int index);
+		void siftDown(int index);
+		int left(int index);
+		int right(int index);
+		int parent(int index);
+		int capacity;
 		int values[100];
-		
 };
 #endif

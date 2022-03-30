@@ -44,7 +44,7 @@ int main(){
 			int ammount = atoi(next);
 			heap = new Heap();
 			for(int i = 0; i < ammount; i++){
-				
+				heap->push(rand()%101); //add a random number between 0 and 100
 				
 			}
 		}
