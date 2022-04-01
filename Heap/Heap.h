@@ -26,6 +26,7 @@ class Heap{
 		int left(int index);
 		int right(int index);
 		int parent(int index);
+		void printRec(int index, int spaces);
 		int capacity;
 		int values[100];
 };

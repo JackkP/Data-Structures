@@ -6,11 +6,13 @@
 
 #include <cstring>
 #include <iostream>
+#include <time.h>
 
 using namespace std;
 
 int main(){
 	cout << "Max Heap Project!" << endl;
+	srand(time(0));
 	while (true) {
 		//formatting
 		cout << "=====================================================" << endl;
@@ -43,9 +45,22 @@ int main(){
 			cin.get();
 			int ammount = atoi(next);
 			heap = new Heap();
+			cout << "randomly generated numbers: ";
 			for(int i = 0; i < ammount; i++){
-				heap->push(rand()%101); //add a random number between 0 and 100
-				
+				int number = rand()%101;
+				//cout << number << " ";
+				heap->push(number); //add a random number between 0 and 100
+			}
+			cout << endl;
+			heap->print();
+			cout << endl << endl;
+`
+			int top = heap->pop();
+			cout << "peek = " << heap->peek();
+			cout << "top = " << top;
+			while (top != INT_MIN){
+				cout << top << " ";
+
 			}
 		}
 		else {
