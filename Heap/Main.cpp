@@ -1,5 +1,6 @@
 /* Jack Porter, C++ Data Structures, March 2022
- * Heap project, creates a binary max 
+ * Heap project, creates a binary tree/max heap, displays it,
+ * and prints a sorted list of numbers by removing the values from the top of the heap
  */
 
 #include "Heap.h"
@@ -54,7 +55,7 @@ vector<int>* split(char* in, char delimiter){
 }
 
 int main(){
-	cout << "Max Heap Project!" << endl;
+	cout << "Heap Project!\nSorts and displays data using a max heap data structure." << endl;
 	srand(time(0));
 	while (true) {
 		//formatting
@@ -62,8 +63,8 @@ int main(){
 		cout << "type \"read\" to read in numbers from a file, \"input\" to input numbers manually,";
 		cout << "\n \"generate\" to generate random numbers, or \"quit\" to exit the program" << endl;
 		
-		char next[1000];
-		cin.get(next, 1000);
+		char next[2000];
+		cin.get(next, 2000);
 		cin.get();
 		
 		cout << "====================================================================================" << endl;
@@ -78,28 +79,44 @@ int main(){
 			cin.get(next, 100);
 			cin.get();
 			
-			int* numbers = new int[100];
 			ifstream numberfile (next);
+			//for reading from file:
 			char* numberInput = new char[2000];
 			numberfile.getline(numberInput, 2000);
 			numberfile.close();
 			
-			//cout << numberInput << endl;
 			heap = new Heap();
 
 			vector<int>* splitArray = split(numberInput, ' '); //result vector
+			//push all the integers in the output vector onto the maxheap
 			for (vector<int>::iterator ptr = splitArray->begin(); ptr < splitArray->end(); ptr++) {
-				cout << *ptr << " ";
 				heap->push(*ptr);
 			}
-			cout << endl;
 			
+			//print the heap
 			printHeap(heap);
 
+			delete splitArray;
+			delete heap;
 		}
 		else if(strcmp(next, "input") == 0){
-			cout << "enter your numbers seperated by commas" << endl;
-			cin.get(next, 1000);
+			cout << "enter your numbers seperated by spaces, no extra spaces, up to 100 numbers" << endl;
+			cin.get(next, 2000);
+			cin.get();
+			
+			heap = new Heap();
+
+			vector<int>* splitArray = split(next, ' '); //result vector
+			//push all the integers in the output vector onto the max heap
+			for (vector<int>::iterator ptr = splitArray->begin(); ptr < splitArray->end(); ptr++) {
+				heap->push(*ptr);
+			}
+			
+			//print the heap
+			printHeap(heap);
+
+			delete splitArray;
+			delete heap;
 
 		}
 		else if(strcmp(next, "generate") == 0){

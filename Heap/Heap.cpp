@@ -4,8 +4,10 @@
 
 #include "Heap.h"
 
+const int capacity = 100;
+
 Heap::Heap(){
-	capacity = 100;
+	//capacity = 100;
 	for(int i = 0; i < capacity; i++){
 		values[i] = INT_MIN;
 	}
@@ -37,13 +39,7 @@ void Heap::printRec(int index, int space) {
 
 void Heap::print(){
 	int counter = 0;
-	cout << "printing, capacity = " << capacity << endl;
-	for(int i = 0; i < capacity; i++){
-	cout << "i = " << i << ", " << values[i] << endl;	
-	}
-
 	cout << endl;
-	
 	printRec(0, 0); //print starting at the head
 }
 
@@ -120,7 +116,6 @@ int Heap::size(){
 }
 
 bool Heap::push(int val){ //push a value onto the heap
-	cout << "capacity = " << capacity << endl;
 	int index = size();
 	if (index < capacity){ //if the heap has room
 		values[index] = val; //add it and check to see if it needs to be sifted up
