@@ -7,15 +7,58 @@
 #include <cstring>
 #include <iostream>
 #include <time.h>
+#include <fstream>
+#include <vector>
 
 using namespace std;
+
+void printHeap(Heap* heap){
+	//print the tree
+	cout << "\nVisualized as a tree:\n" << endl;
+	heap->print();
+	
+	//remove the items from the tree one by one and print those as a list
+	int top = heap->pop();
+	cout << "\nSorted list:" << endl;
+	while (top != INT_MIN){
+		cout << top << " ";
+		top = heap->pop();
+	}
+	cout << endl;
+}
+
+//(sensitive) function to split char array to vector of integers with a delimiter
+vector<int>* split(char* in, char delimiter){
+	vector<int>* list = new vector<int>;
+	int startindex = 0; //start of the current word
+	for(int i = 0; i < strlen(in); i++){
+		if((in[i] == delimiter || i == strlen(in)) && startindex != i) { //if end of a word
+			char newnum[i-startindex]; //new word string
+			for(int j = 0; j < i-startindex; j++){ //copy to new word string
+				newnum[j] = in[j+startindex];
+			}
+			newnum[i-startindex] = '\0';
+			list->push_back(atoi(newnum)); //add to vector
+			startindex = i; //update start of next word
+		}
+	}
+	if(in[strlen(in)-1] != delimiter){ //last word
+		char newnum[strlen(in)-startindex];
+		for(int j = 0; j < strlen(in)-startindex; j++){
+			newnum[j] = in[j+startindex];
+		}
+		newnum[strlen(in)-startindex] = '\0';
+		list->push_back(atoi(newnum));
+	}
+	return list;
+}
 
 int main(){
 	cout << "Max Heap Project!" << endl;
 	srand(time(0));
 	while (true) {
 		//formatting
-		cout << "=====================================================" << endl;
+		cout << "====================================================================================" << endl;
 		cout << "type \"read\" to read in numbers from a file, \"input\" to input numbers manually,";
 		cout << "\n \"generate\" to generate random numbers, or \"quit\" to exit the program" << endl;
 		
@@ -23,7 +66,7 @@ int main(){
 		cin.get(next, 1000);
 		cin.get();
 		
-		cout << "=====================================================" << endl;
+		cout << "====================================================================================" << endl;
 		
 		Heap* heap = NULL;
 
@@ -31,37 +74,48 @@ int main(){
 			break;
 		}
 		else if(strcmp(next, "read") == 0){
-			cout << "filename?" << endl;
-			cin.get(next, 1000);
+			cout << "filename? (numbers should be seperated by spaces, up to 100 numbers)" << endl;
+			cin.get(next, 100);
 			cin.get();
+			
+			int* numbers = new int[100];
+			ifstream numberfile (next);
+			char* numberInput = new char[2000];
+			numberfile.getline(numberInput, 2000);
+			numberfile.close();
+			
+			//cout << numberInput << endl;
+			heap = new Heap();
+
+			vector<int>* splitArray = split(numberInput, ' '); //result vector
+			for (vector<int>::iterator ptr = splitArray->begin(); ptr < splitArray->end(); ptr++) {
+				cout << *ptr << " ";
+				heap->push(*ptr);
+			}
+			cout << endl;
+			
+			printHeap(heap);
+
 		}
 		else if(strcmp(next, "input") == 0){
 			cout << "enter your numbers seperated by commas" << endl;
 			cin.get(next, 1000);
+
 		}
 		else if(strcmp(next, "generate") == 0){
 			cout << "how many numbers would you like to generate? (up to 100)" << endl;
 			cin.get(next, 1000);
 			cin.get();
-			int ammount = atoi(next);
-			heap = new Heap();
-			cout << "randomly generated numbers: ";
-			for(int i = 0; i < ammount; i++){
-				int number = rand()%101;
-				//cout << number << " ";
+			int amount = atoi(next);
+			
+			heap = new Heap(); //create a new heap
+			
+			for(int i = 0; i < amount; i++){ //add (amount) random numbers to the heap
+				int number = rand()%1001;
 				heap->push(number); //add a random number between 0 and 100
 			}
-			cout << endl;
-			heap->print();
-			cout << endl << endl;
-`
-			int top = heap->pop();
-			cout << "peek = " << heap->peek();
-			cout << "top = " << top;
-			while (top != INT_MIN){
-				cout << top << " ";
-
-			}
+			printHeap(heap); //print it
+			delete heap; //get rid of it
 		}
 		else {
 			cout << "not a valid input, please try again" << endl;
