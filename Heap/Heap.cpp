@@ -77,7 +77,8 @@ int Heap::parent(int index){
 
 void Heap::siftUp(int index){
 	int pIndex = parent(index);
-	if(values[index] > values[pIndex]){ //if the value is greater than its parent
+
+	if(pIndex >= 0 && values[index] > values[pIndex]){ //if the value is greater than its parent
 		int temp = values[index]; //swap it with the parent
 		values[index] = values[pIndex];
 		values[pIndex] = temp;
