@@ -6,7 +6,31 @@
 
 using namespace std;
 
+//CONSTRUCTOR:
+//Public function:
+BinaryTree::BinaryTree(){
+	head = NULL;
+}
 
+//DESTRUCTOR:
+//Helper function:
+void BinaryTree::deleteRec(Node* n){ //recursively delete all nodes from tree with head n
+	if (n) {
+		deleteRec(n->right);
+		deleteRec(n->left);
+		delete n;
+	}
+}
+
+//Public function:
+BinaryTree::~BinaryTree(){
+	deleteRec(head);
+}
+
+
+
+//PRINTING:
+//Helper functions:
 //function to print branches of the binary tree
 void BinaryTree::showBranches(Branch* p){
 	if (p) {
@@ -14,6 +38,7 @@ void BinaryTree::showBranches(Branch* p){
 		cout << p->str;
 	}
 }
+
 //function to print binary tree with branches based on (almost identical to) https://www.techiedelight.com/c-program-print-binary-tree/
 void BinaryTree::printTree(Node* n, Branch* prev, bool isRight) {
     if (!n) { //dont print this node
@@ -49,7 +74,6 @@ void BinaryTree::printTree(Node* n, Branch* prev, bool isRight) {
     delete branch; //get rid of the branch when finished
 }
 
-
 void BinaryTree::printRec(Node* n, int space) { //print without lines between
 	if (!n) return;
 	
@@ -68,6 +92,7 @@ void BinaryTree::printRec(Node* n, int space) { //print without lines between
 	printRec(n->left, space);
 }
 
+//Public function:
 void BinaryTree::print(){
 	//cout << endl;
 	//printRec(head, 0); //print starting at the head
@@ -78,22 +103,10 @@ void BinaryTree::print(){
 	cout << endl;
 }
 
-BinaryTree::BinaryTree(){
-	head = NULL;
-}
 
-void BinaryTree::deleteRec(Node* n){ //recursively delete all nodes from tree with head n
-	if (n) {
-		deleteRec(n->right);
-		deleteRec(n->left);
-		delete n;
-	}
-}
 
-BinaryTree::~BinaryTree(){
-	deleteRec(head);
-}
-
+//PUSHING:
+//Helper function:
 void BinaryTree::addAfter(Node* val, Node* &n){ //recursively add node to binary tree
 	if (n) {
 		if (val->value >= n->value) {
@@ -106,12 +119,17 @@ void BinaryTree::addAfter(Node* val, Node* &n){ //recursively add node to binary
 	else n = val;
 }
 
+//Public function:
 void BinaryTree::push(int val){ //add a value to the tree
 	Node* newNode = new Node(val);
 	addAfter(newNode, head);
 }
 
-int BinaryTree::searchRec(Node* n, int val){ //search and return number of values contained in sub tree with head n
+
+
+//SEARCHING:
+//Helper function:
+int BinaryTree::searchRec(Node* n, int val){ //search and return number of values contained in tree with head n
 	if(!n) return 0;
 	
 	Node* next = n->left;
@@ -120,10 +138,15 @@ int BinaryTree::searchRec(Node* n, int val){ //search and return number of value
 	else return searchRec(next, val);
 }
 
+//Public function:
 int BinaryTree::search(int val){ //return number of a value that exist in the tree
 	return searchRec(head, val);
 }
 
+
+
+//REMOVING:
+//Helper functions:
 Node* BinaryTree::replacewith(Node* &n){ //pull the leftmost node out and return it
 	if(!n) return NULL;
 	cout << "n->value = " << n->value << endl;
@@ -135,7 +158,6 @@ Node* BinaryTree::replacewith(Node* &n){ //pull the leftmost node out and return
 		return tmp;
 	}
 }
-
 
 int BinaryTree::removeRec(Node* &n, int val){ //recursively remove all of a certain value in the tree
 	if(!n) return 0;
@@ -163,6 +185,7 @@ int BinaryTree::removeRec(Node* &n, int val){ //recursively remove all of a cert
 
 }
 
+//Public function:
 int BinaryTree::remove(int val){ //return the number of removed values in the tree
 	//cout << "ptr loc of 5 is " << head->left->left->right->left << endl;
 	return removeRec(head, val);
