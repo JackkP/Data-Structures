@@ -2,16 +2,39 @@
 // Jack P, C++ Data Structures, April 2022
 
 #include "Node.h"
+#include <cstring>
 
 using namespace std;
 
+//struct for printing trees based on https://www.techiedelight.com/c-program-print-binary-tree/
+struct Branch {
+	Branch* prev;
+	char* str;
+
+	Branch(){
+		str = new char[10];
+	}
+    
+	~Branch(){
+		delete prev;
+		delete str;
+	}
+
+};
+
 class BinaryTree {
 	public:
-		void add(int val);
+		BinaryTree();
+		~BinaryTree();
+		void push(int val);
 		int remove(int val);
-		bool search(int val);
-		void print(Node* n, int space);
+		void print();
+		int search(int val);
 	private:
 		Node* head;
-		void addAfter(int val, Node* &n);
+		void addAfter(Node* val, Node* &n);
+		void printRec(Node* n, int space);
+		void showBranches(Branch* p);
+		void printTree(Node* n, Branch* p, bool isLeft);
+
 };
