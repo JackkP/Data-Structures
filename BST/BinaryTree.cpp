@@ -10,73 +10,47 @@ using namespace std;
 //function to print branches of the binary tree
 void BinaryTree::showBranches(Branch* p){
 	if (p) {
-		//cout << *p->str << "+";
 		showBranches(p->prev); //print the previous branch (in this line)
 		cout << p->str;
 	}
 }
-//function to print binary tree with branches from https://www.techiedelight.com/c-program-print-binary-tree/
-void BinaryTree::printTree(Node* n, Branch* prev, bool isLeft) {
-    if (!n) {
+//function to print binary tree with branches based on (almost identical to) https://www.techiedelight.com/c-program-print-binary-tree/
+void BinaryTree::printTree(Node* n, Branch* prev, bool isRight) {
+    if (!n) { //dont print this node
         return;
     }
 
     char prev_str[10];
-    strcpy(prev_str, "    ");
+    strcpy(prev_str, "       "); //start with a space precceding (horizontally)
     Branch* branch = new Branch(); //new branch for this node
-    branch->prev = prev;
+    branch->prev = prev; //building linked list of horzontal branches
     strcpy(branch->str, prev_str);
-    //cout << "node value = " << n->value << endl;
-    //cout << "branch->str = " << branch->str << endl;
-    //printf ("branch->prev = %d\n", branch->prev);
-    //cout << 1 << endl;
-    //if (branch->prev == NULL) cout << "1.4" << endl;
-    //if (branch->prev) printf ("branch->prev->str = %d\n", branch->prev->str);
-    //cout << 1.5 << endl;
-    //if (branch->prev) if (branch->prev->str) cout << "first branch (prev != NULL) ->prev->str: " << branch->prev->str << endl;
-    //cout << 2 << endl;
     printTree(n->right, branch, true); //print the tree for the right most branch
-    //cout << 3 << endl;
 
-    if (!prev) {
-	//cout << "!prev" << endl;
+    if (!prev) { //head of the tree
 	strcpy(branch->str, "———");
     }
-    else if (isLeft){
-	//cout << "isleft" << endl;
-	strcpy(branch->str, ".———");
-        strcpy(prev_str, "    |");
-	//cout << "prev_str = " << prev_str << endl;
+    else if (isRight){
+	strcpy(branch->str, ".———"); //right node
+        strcpy(prev_str, "      |");
     }
     else {
-	//cout << "else" << endl;
-	strcpy(branch->str, "`———");
+	strcpy(branch->str, "`———"); //left node
         strcpy(prev->str, prev_str);
     }
-    //cout << n->value << endl;
-    //cout << "branch->str = " << branch->str << endl;
-    /*if (branch->prev){
-	    cout << "branch->prev: " << branch->prev << endl;
-	    cout << "branch->prev->str = " << branch->prev->str << endl;
-    }*/
-    //cout << 4 << endl;
-    showBranches(branch);
+    showBranches(branch); //print the linked list of preceeding branches on this line
     cout << " " << n->value << endl;
     
-    //cout << 5 << endl;
-    if (prev) {	
-	//cout << "prev" << endl;
+    if (prev) {	//add space or vertical line depending on left/right
         strcpy(prev->str, prev_str);
     }
-    //cout << 6 << endl;
-    strcpy(branch->str, "    |");
-    //cout << 7 << endl;
+    strcpy(branch->str, "      |");
     printTree(n->left, branch, false);
-    //cout << 8 << endl;
+    delete branch; //get rid of the branch when finished
 }
 
 
-void BinaryTree::printRec(Node* n, int space) {
+void BinaryTree::printRec(Node* n, int space) { //print without lines between
 	if (!n) return;
 	
 	// Increase distance between levels by 10 spaces
@@ -95,19 +69,20 @@ void BinaryTree::printRec(Node* n, int space) {
 }
 
 void BinaryTree::print(){
-	cout << endl;
-	printRec(head, 0); //print starting at the head
+	//cout << endl;
+	//printRec(head, 0); //print starting at the head
 	
-	cout << "with branches:\n\n" << endl; 
+	//cout << "with branches:\n\n" << endl; 
 	cout << endl;
 	printTree(head, NULL, false);
+	cout << endl;
 }
 
 BinaryTree::BinaryTree(){
 	head = NULL;
 }
 
-void deleteRec(Node* n){
+void BinaryTree::deleteRec(Node* n){ //recursively delete all nodes from tree with head n
 	if (n) {
 		deleteRec(n->right);
 		deleteRec(n->left);
@@ -131,17 +106,64 @@ void BinaryTree::addAfter(Node* val, Node* &n){ //recursively add node to binary
 	else n = val;
 }
 
-void BinaryTree::push(int val){
+void BinaryTree::push(int val){ //add a value to the tree
 	Node* newNode = new Node(val);
 	addAfter(newNode, head);
 }
 
-int BinaryTree::search(int val){
+int BinaryTree::searchRec(Node* n, int val){ //search and return number of values contained in sub tree with head n
+	if(!n) return 0;
+	
+	Node* next = n->left;
+	if (val >= n->value) next = n->right;
+	if (val == n->value) return 1 + searchRec(next, val);
+	else return searchRec(next, val);
+}
 
+int BinaryTree::search(int val){ //return number of a value that exist in the tree
+	return searchRec(head, val);
+}
+
+Node* BinaryTree::replacewith(Node* &n){ //pull the leftmost node out and return it
+	if(!n) return NULL;
+	cout << "n->value = " << n->value << endl;
+	if (n->left) return replacewith(n->left); //left tree
+	else if (n->right) return replacewith(n->right); //if no left tree, use right tree
+	else { //no node to the left or right
+		Node* tmp = n;
+		n = NULL;
+		return tmp;
+	}
+}
+
+
+int BinaryTree::removeRec(Node* &n, int val){ //recursively remove all of a certain value in the tree
+	if(!n) return 0;
+	if (n->value == val){
+		if (n->right){ //delete n and replace with the lowest value on the right
+			Node* tmp = replacewith(n->right); //pointer to replacement value
+			Node* right = n->right; //store the right tree to n
+			Node* left = n->left; //store the left tree to n
+			delete n; //delete the node
+			n = tmp; //place the new node
+			if (right) n->right = right; //make sure not to overwrite left and right trees
+			if (left) n->left = left;
+		}
+		else { //replace with the head of the left (still applies if null)
+			Node* tmp = n->left; //
+			delete n;
+			n = tmp;
+		}
+		return 1 + removeRec(n, val); //add 1 and continue searching from this location
+	}
+	else {
+		if (val >= n->value) return removeRec(n->right, val); //look to the right of this node
+		else return removeRec(n->left, val); //look to the left of this node
+	}
 
 }
 
-int BinaryTree::remove(int val){
-
-
+int BinaryTree::remove(int val){ //return the number of removed values in the tree
+	//cout << "ptr loc of 5 is " << head->left->left->right->left << endl;
+	return removeRec(head, val);
 }
