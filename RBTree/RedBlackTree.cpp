@@ -116,8 +116,9 @@ Node* RedBlackTree::uncle(Node* n){ //return the uncle or NULL if there is no un
 	else return NULL;
 }
 
-void RedBlackTree::balance(Node* &n){
+void RedBlackTree::balance(Node* n){
 	if (!n) return;
+	print();
 	cout << "balancing" << endl;
 	if (n == head) { //case 1, inserting at the root
 		cout << "case 1" << endl;
@@ -151,7 +152,7 @@ void RedBlackTree::balance(Node* &n){
 			G->right = n;
 			n->parent = G;
 			P->left = n->right;
-			if (p->left) p->left->parent = P;
+			if (P->left) P->left->parent = P;
 			n->right = P;
 			P->parent = n;
 			balance(P);
@@ -161,12 +162,19 @@ void RedBlackTree::balance(Node* &n){
 			cout << "p=l, n=r" << endl;
 			Node* G = n->parent->parent;
 			Node* P = n->parent;
+			cout << "G: " << G->value << " P: " << P->value << " N: " << n->value << endl;
 			G->left = n;
 			n->parent = G;
+			cout << "1" << endl;
 			P->right = n->left;
-			if (p->right) p->right->parent = p;
+			cout << "1.5" << endl;
+			if (P->right) P->right->parent = P;
+			cout << "2" << endl;
+			cout << "N: " << n->value << " P: " << P->value << endl;
 			n->left = P;
+			cout << "3" << endl;
 			P->parent = n;
+			cout << "4" << endl;
 			balance(P);
 		}
 	}
@@ -174,17 +182,42 @@ void RedBlackTree::balance(Node* &n){
 			&& (!uncle(n) || uncle(n)->color == BLACK) //uncle is black
 			&& (n == n->parent->left && n->parent == n->parent->parent->left || //left left or right right
 				n == n->parent->right && n->parent == n->parent->parent->right)) { //case 5
-		cout << "case 4";
-		if (n == n->parent->left && n->parent == n->parent->parent->leftt){ //node is the outside grandchild to the left, case 5 
+		cout << "case 5 ";
+		if (n == n->parent->left && n->parent == n->parent->parent->left){ //node is the outside grandchild to the left, case 5 
 			cout << "p=l, n=l" << endl;
 			Node* G = n->parent->parent;
 			Node* P = n->parent;
-			G->left = P->right;
-			if (G->left) G->left->parent = G;
-			//todo: finish rotation through grandparent
 
+			cout << "G value: " << G->value << " P value: " << P->value << endl;
+			
+			G->color = RED;
+			P->color = BLACK;
+
+			G->left = P->right;
+			if (G->left) G->left->parent = G; cout << "G->left->parent = G" << endl;
+			P->right = G;
+			P->parent = G->parent;
+			G->parent = P;
+			if (G == head) {head = P; cout << "head = P" << endl;}
+			else if (P->parent->right == G) {P->parent->right = P; cout << "P->parent->right == P" << endl;}
+			else if (P->parent->left == G) {P->parent->left = P; cout << "P->parent->left == P" << endl;}
 		}
 		else if (n == n->parent->right && n->parent == n->parent->parent->right){ //node is the outside grandchild to the right, case 5
+			cout << "p=r, n=r" << endl;
+			Node* G = n->parent->parent;
+			Node* P = n->parent;
+			
+			G->color = RED;
+			P->color = BLACK;
+
+			G->right = P->left;
+			if (G->right) G->right->parent = G;
+			P->left = G;
+			P->parent = G->parent;
+			G->parent = P;
+			if (G == head) {head = P;}
+			else if (G->parent->left == G) G->parent->left = P;
+			else if (G->parent->right == G) G->parent->right = P;
 		}
 	}
 }
