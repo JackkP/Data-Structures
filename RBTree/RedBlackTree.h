@@ -19,7 +19,7 @@ class RedBlackTree {
 	private:
 		Node* head;
 		
-		void balance(Node* &n); //Ballance the tree with head N
+		void balance(Node* n); //Ballance the tree with head N
 		Node* uncle(Node* n); //Return the uncle or NULL if no uncle
 
 
