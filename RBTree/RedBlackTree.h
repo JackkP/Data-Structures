@@ -19,7 +19,7 @@ class RedBlackTree {
 	private:
 		Node* head;
 		
-		void balance(Node* n); //Ballance the tree with head N
+		void balanceIns(Node* n); //Ballance the tree with head N
 		Node* uncle(Node* n); //Return the uncle or NULL if no uncle
 
 
@@ -31,4 +31,9 @@ class RedBlackTree {
 		void printTree(Node* n, Branch* p, bool isRight); //helper function for print, recursive print (with lines)
 		
 		void deleteRec(Node* n); //helper function for destructor, recursive delete (all nodes)
+
+		int searchRec(Node* n, int val);
+		
+		Node* replacewith(Node* &n); //helper function for removing, returns a pointer to the node that the removed node is replaced with
+		int removeRec(Node* &n, int val); //helper function for remove, removes nodes with value == val
 };
