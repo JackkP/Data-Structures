@@ -19,6 +19,8 @@ class RedBlackTree {
 	private:
 		Node* head;
 		
+		void rotate(Node* P, bool right); //rotate a tree through node h to the right=true or left=false
+
 		void balanceIns(Node* n); //Ballance the tree with head N
 		Node* uncle(Node* n); //Return the uncle or NULL if no uncle
 
@@ -34,6 +36,7 @@ class RedBlackTree {
 
 		int searchRec(Node* n, int val);
 		
-		Node* replacewith(Node* &n); //helper function for removing, returns a pointer to the node that the removed node is replaced with
-		int removeRec(Node* &n, int val); //helper function for remove, removes nodes with value == val
+		Node* inorderSuccesso(Node* n, bool right); //helper function for removing, returns a pointer to the node that the removed node is replaced with
+		void balanceRem(Node* n);
+		int removeN(Node* n, int val); //helper function for remove, removes nodes with value == val
 };

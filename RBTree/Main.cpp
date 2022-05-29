@@ -84,7 +84,7 @@ int main(){
 			int amount = atoi(next);
 			
 			for(int i = 0; i < amount; i++){ //add (amount) random numbers to the heap
-				int number = rand()%11;
+				int number = rand()%101;
 				tree->push(number); //add a random number between 0 and 100
 			}
 			tree->print();
