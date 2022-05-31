@@ -17,13 +17,14 @@ class RedBlackTree {
 		void print();
 		int search(int val);
 	private:
-		Node* head;
+		Node* root;
 		
 		void rotate(Node* P, bool right); //rotate a tree through node h to the right=true or left=false
 
-		void balanceIns(Node* n); //Ballance the tree with head N
+		void balanceIns(Node* n); //Ballance the tree with root N
+		
 		Node* uncle(Node* n); //Return the uncle or NULL if no uncle
-
+		Node* sibling(Node* n); //Return the sibling of the node or NULL if no sibling
 
 		void addAfter(Node* val, Node* &n, Node* parent); //helper function for push
 		
@@ -36,7 +37,7 @@ class RedBlackTree {
 
 		int searchRec(Node* n, int val);
 		
-		Node* inorderSuccesso(Node* n, bool right); //helper function for removing, returns a pointer to the node that the removed node is replaced with
+		Node* inorderSuccessor(Node* n, bool right); //helper function for removing, returns a pointer to the node that the removed node is replaced with
 		void balanceRem(Node* n);
-		int removeN(Node* n, int val); //helper function for remove, removes nodes with value == val
+		int removeN(Node* n, int val); //helper function for remove, removes nodes with data == val
 };

@@ -12,12 +12,12 @@ using namespace std;
 //CONSTRUCTOR:
 //Public function:
 RedBlackTree::RedBlackTree(){
-	head = NULL;
+	root = NULL;
 }
 
 //DESTRUCTOR:
 //Helper function:
-void RedBlackTree::deleteRec(Node* n){ //recursively delete all nodes from tree with head n
+void RedBlackTree::deleteRec(Node* n){ //recursively delete all nodes from tree with root n
 	if (n) {
 		deleteRec(n->right);
 		deleteRec(n->left);
@@ -27,7 +27,7 @@ void RedBlackTree::deleteRec(Node* n){ //recursively delete all nodes from tree 
 
 //Public function:
 RedBlackTree::~RedBlackTree(){
-	deleteRec(head);
+	deleteRec(root);
 }
 
 
@@ -55,7 +55,7 @@ void RedBlackTree::printTree(Node* n, Branch* prev, bool isRight) {
     strcpy(branch->str, prev_str);
     printTree(n->right, branch, true); //print the tree for the right most branch
 
-    if (!prev) { //head of the tree
+    if (!prev) { //root of the tree
 	strcpy(branch->str, "———");
     }
     else if (isRight){
@@ -67,7 +67,7 @@ void RedBlackTree::printTree(Node* n, Branch* prev, bool isRight) {
         strcpy(prev->str, prev_str);
     }
     showBranches(branch); //print the linked list of preceeding branches on this line
-    cout << " " << n->value;
+    cout << " " << n->data;
     if (n->color == RED) cout << " (R)" << endl;
     else if (n->color == BLACK) cout << " (B)" << endl;
     
@@ -88,10 +88,10 @@ void RedBlackTree::printRec(Node* n, int space) { //print without lines between
 	//Print right child tree first
 	printRec(n->right, space);
 	
-	// Print current value after space
+	// Print current data after space
 	for (int i = 10; i < space; i++)
         	cout<<" ";
-    	cout<<n->value<<"\n\n";
+    	cout<<n->data<<"\n\n";
 
 	//Print left child tree
 	printRec(n->left, space);
@@ -100,11 +100,11 @@ void RedBlackTree::printRec(Node* n, int space) { //print without lines between
 //Public function:
 void RedBlackTree::print(){
 	//cout << endl;
-	//printRec(head, 0); //print starting at the head
+	//printRec(root, 0); //print starting at the root
 	
 	//cout << "with branches:\n\n" << endl; 
 	cout << endl;
-	printTree(head, NULL, false);
+	printTree(root, NULL, false);
 	cout << endl;
 }
 
@@ -126,20 +126,23 @@ void RedBlackTree::rotate(Node* P, bool right){
 	}
 	
 	N->parent = G;
-	if(!G) head = N;
+	if(!G) root = N;
 	else if (G->right == P) G->right = N;
 	else G->left = N;
 }
 
 
 Node* RedBlackTree::uncle(Node* n){ //return the uncle or NULL if there is no uncle
-	if (n->parent){ //n has a parent
-		if (n->parent->parent){ //n has a grandparent
-			if (n->parent == n->parent->parent->left) return n->parent->parent->right;
-			else if (n->parent = n->parent->parent->right) return n->parent->parent->left;
-		}
-		else return NULL;
+	if (n->parent && n->parent->parent){ //n has a grandparent
+		if (n->parent == n->parent->parent->left) return n->parent->parent->right;
+		else if (n->parent = n->parent->parent->right) return n->parent->parent->left;
 	}
+	else return NULL;
+}
+
+Node* RedBlackTree::sibling(Node* n){ //return the sibling
+	if (n->parent && n == n->parent->right) return n->parent->left;
+	else if (n->parent && n == n->parent->left) return n->parent->right;
 	else return NULL;
 }
 
@@ -148,7 +151,7 @@ void RedBlackTree::balanceIns(Node* n){
 	if (!n) return;
 	//print();
 	cout << "balancing" << endl;
-	if (n == head) { //case 1, inserting at the root
+	if (n == root) { //case 1, inserting at the root
 		cout << "case 1" << endl; //set the color to black
 		n->color = BLACK;
 		return;
@@ -217,10 +220,10 @@ void RedBlackTree::balanceIns(Node* n){
 //Helper function:
 void RedBlackTree::addAfter(Node* val, Node* &n, Node* parent){ //recursively add node to binary tree
 	if (n) {
-		if (val->value >= n->value) {
+		if (val->data >= n->data) {
 			addAfter(val, n->right, n); //add it to the right because it is greater than or equal to n
 		}
-		else if (val->value < n->value){ //add it to the left because it less than n
+		else if (val->data < n->data){ //add it to the left because it less than n
 			addAfter(val, n->left, n);
 		}
 	}
@@ -232,74 +235,126 @@ void RedBlackTree::addAfter(Node* val, Node* &n, Node* parent){ //recursively ad
 }
 
 //Public function:
-void RedBlackTree::push(int val){ //add a value to the tree
+void RedBlackTree::push(int val){ //add a data to the tree
 	Node* newNode = new Node(val);
-	addAfter(newNode, head, NULL);
+	addAfter(newNode, root, NULL);
 }
 
 //SEARCHING:
 //Helper function:
-int RedBlackTree::searchRec(Node* n, int val){ //search and return number of values contained in tree with head n
+int RedBlackTree::searchRec(Node* n, int val){ //search and return number of datas contained in tree with root n
 	if(!n) return 0;
-	else if (val > n->value) return searchRec(n->right, val);
-	else if (val < n->value) return searchRec(n->left, val);
-	else if (val == n->value) return 1 + searchRec(n->left, val) + searchRec(n->right, val);
+	else if (val > n->data) return searchRec(n->right, val);
+	else if (val < n->data) return searchRec(n->left, val);
+	else if (val == n->data) return 1 + searchRec(n->left, val) + searchRec(n->right, val);
 }
 
 //Public function:
-int RedBlackTree::search(int val){ //return number of a value that exist in the tree
-	return searchRec(head, val);
+int RedBlackTree::search(int val){ //return number of a data that exist in the tree
+	return searchRec(root, val);
 }
 
 
 Node* RedBlackTree::inorderSuccessor(Node* n, bool right){ //pull the leftmost node out and return it
 	if(!n) return NULL;
-	cout << "n->value = " << n->value << endl;
+	cout << "n->data = " << n->data << endl;
 	if (right) { //searching the right side so will be traversing left (next highest)
-		if (n->left) return replacewith(n->left, RIGHT);
+		if (n->left) return inorderSuccessor(n->left, RIGHT);
 		else return n;
 	}
 	else { //searching left tree so traversing right (next lowest)
-		if (n->right) return replacewith(n->right, LEFT);
+		if (n->right) return inorderSuccessor(n->right, LEFT);
 		else return n;
 	}
 }
 
 void RedBlackTree::balanceRem(Node* n){
+	S = sibling(n);
+	P = n->parent;
 	
+	//case 4: parent is red and sibling is black with two black children
+	if (P && P->color == RED && S && S->color == BLACK &&
+			((!S->right || S->right->color == BLACK) &&  (!S->left || S->left->color == BLACK))) {
+		S->color = RED;
+		P->color = BLACK;
+		return;
+	}
+	
+	//case 6: Sibling is black and outer child is red
+	if(S->color == BLACK && ((S == P->right && S->right && S->right->color == RED)
+				|| (S == P->left && S->left && S->left->color == RED))){
+		Node* outer;
+		if (S == P->right) outer = S->right;
+		else outer = S->left;
+		rotate(P, LEFT);
+		outer->color = BLACK;
+		
+	}
 	
 }
 
-int RedBlackTree::removeN(Node* n, int val){ //remove the first of a certain value in the tree
+int RedBlackTree::removeN(Node* n, int val){ //remove the first of a certain data in the tree
 	if(!n) return 0;
-	if (n->value == val){ //node to delete
-		if (n == head && !n->right && !n->left) { //n is head and has no children
-			head = NULL;
-			delete n;
-			return 1;
-		}
+	if (n->data == val){ //node to delete
 		
-		Node* N; //node to be deleted from the tree
+		//simple cases:
+		
+		//simple case 1: n is the root and has two null children
+		if (n == root && !n->left && !n->right){
+			root = null;
+		}
 
 		//find the inorder successor
+		Node* N;
 		if (n->left) N = inorderSuccessor(n->left, LEFT);
 		else if (n->right) N = inorderSuccessor(n->right, RIGHT);
 		else N = n;
-		
+
 		//copy data from node to be deleted into n
 		n->data = N->data;
-
-		//simple cases:
-		//N is red and has no children
+		
+		//N is red and has no children (simple case 2)
 		if (N->color == RED && !N->left && !N->right){
+			cout << "Delete Simple Case 2" << endl;
+			
 			//set parent pointer to NULL and delete it
 			if (N == N->parent->right) N->parent->right = NULL;
 			else N->parent->left = NULL;
 			delete N;
 			return 1;
 		}
-		else if (N->color == BLACK){
-			
+
+		//black node with one child and child is red, move the child to its place and delete (simple case 3)
+		else if (N->color == BLACK && ((N->left && N->left->color == RED) || (N->right && N->right->color == RED))){
+			cout << "Delete Simple Case 3" << endl;
+
+			//delete N and move C into its place, change C to black
+			Node* C;
+			if (N->left){
+				C = N->left;
+				if (N == N->parent->right) N->parent->right = C;
+				else N->parent->left = C;
+			}
+			else {
+				C = N->right;
+				if (N == N->parent->right) N->parent->right = C;
+				else N->parent->left = C;
+			}
+			C->parent = N->parent;
+			delete N;
+		}
+		
+		//complex case:
+		//black node with no red child
+		else {
+			N->data = INT_MIN;
+			balanceRem(N);
+			cout << "seg fault here" << endl;
+			if (N == N->parent->right){ //may cause a seg fault
+				
+			}
+			else if (N->parent
+			cout << "wtf, no seg fault?" << endl;
 		}
 
 		//M is the node to be deleted from the tree
@@ -308,13 +363,12 @@ int RedBlackTree::removeN(Node* n, int val){ //remove the first of a certain val
 
 		return 1;
 	}
-	else if (n->value > val) return removeRec(n->left, val);
-	else return removeRec(n->right, val);
-	balanceRem(n);
+	else if (n->data > val) return removeN(n->left, val);
+	else return removeN(n->right, val);
 }
 
 //Public function:
-int RedBlackTree::remove(int val){ //return the number of removed values in the tree
-	//cout << "ptr loc of 5 is " << head->left->left->right->left << endl;
-	return removeN(head, val);
+int RedBlackTree::remove(int val){ //return the number of removed datas in the tree
+	//cout << "ptr loc of 5 is " << root->left->left->right->left << endl;
+	return removeN(root, val);
 }

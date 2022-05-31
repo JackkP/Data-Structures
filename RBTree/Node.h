@@ -12,11 +12,11 @@ struct Node {
 	Node* right;
 	Node* left;
 	Node* parent;
-	int value;
+	int data;
 	bool color;
 
 	Node(int val){
-		value = val;
+		data = val;
 		right = NULL;
 		left = NULL;
 		parent = NULL;
