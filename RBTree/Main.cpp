@@ -1,7 +1,7 @@
 // Red Black Tree Tree Project
 // Jack Porter, C++ Data structures, April 2022
 
-#include "RedBlackTree.h"
+#include "RBTree.h"
 
 #include <cstring>
 #include <iostream>
@@ -24,7 +24,7 @@ int main(){
 	
 	cout << "====================================================================================" << endl;
 	printMenu();
-	RedBlackTree* tree = new RedBlackTree();
+	RBTree* tree = new RBTree();
 
 	while (true) {
 		//formatting
@@ -97,7 +97,7 @@ int main(){
 
 			int numremoved = tree->remove(atoi(next));
 			if(numremoved == 0) cout << "The tree does not contain " << atoi(next) << endl;
-			else cout << "successfully removed " << numremoved << " " <<atoi(next) << "s" << endl;
+			else cout << "successfully removed one " << atoi(next) << endl;
 			tree->print();
 		}
 		else if (strcmp(next, "search") == 0 || strcmp(next, "s") == 0){
@@ -112,22 +112,55 @@ int main(){
 		}
 		else if (strcmp(next, "clear") == 0 || strcmp(next, "clr") == 0 || strcmp(next, "c") == 0){
 			delete tree;
-			tree = new RedBlackTree();
+			tree = new RBTree();
 			cout << "cleared tree" << endl;
 		}
 		else if (strcmp(next, "print") == 0 || strcmp(next, "p") == 0) {
 			tree->print();
 		}
+		//debugging function that generates 200 trees with 20 nodes each then deletes 10 nodes from them
+		//very slow
 		else if (strcmp(next, "loop") == 0 || strcmp(next, "l") == 0){
-			
-			for(int i = 0; i < 100; i++){
-				for(int j = 0; j < 20; j++){ //add 20 random numbers to the heap
+			bool cont = true;
+			for(int i = 0; i < 200; i++){
+				cout << endl << "NEW TREE ======================================" << endl << endl;
+				for(int j = 0; j < 20; j++){ //add 20 random numbers to the tree
 					int number = rand()%101;
+					cout << "inserting " << number << endl;
 					tree->push(number); //add a random number between 0 and 100
+					cout << "tree after insertion" << endl;
+					tree->print();
+					
+					cont = tree->verify();
+					if (!cont) {
+						cout << "failure of insertion" << endl; 
+						break;
+					}
 				}
-				tree->print();
+				
+				if (!cont) break;
+				cout << endl << "NOW REMOVING ==================================" << endl << endl;
+				
+				for(int j = 0; j < 10; j++){ //delete 10 numbers from the tree
+					int number = rand()%101;
+					while (tree->search(number) == 0) {
+						number = rand()%101;
+					}
+					cout << "removed " << tree->remove(number) << "x" << number << endl;
+					cout << "tree after removal" << endl;
+					tree->print();
+					
+					cont = tree->verify();
+					if (!cont) {
+						cout << "failure of deletion" << endl; 
+						break;
+					}
+				}
+
 				delete tree;
-				tree = new RedBlackTree();
+				tree = new RBTree();
+				
+				if (!cont) break;
 			}
 		}
 		else {
@@ -171,5 +204,5 @@ void printMenu(){ //print a command menu
 	cout << "  s, search\t\t - see how many of a number are stored" << endl;
 	cout << "  rm, del, remove\t - remove all of one number" << endl;
 	cout << "  c, clr, clear\t\t - clear the working tree" << endl;
-	cout << "  l, loop \t\t- generate and clear 100 trees (testing)" << endl;
+	cout << "  l, loop \t\t - generate and remove nodes from 200 trees and verify" << endl;
 }
