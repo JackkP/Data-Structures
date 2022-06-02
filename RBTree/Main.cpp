@@ -118,6 +118,18 @@ int main(){
 		else if (strcmp(next, "print") == 0 || strcmp(next, "p") == 0) {
 			tree->print();
 		}
+		else if (strcmp(next, "loop") == 0 || strcmp(next, "l") == 0){
+			
+			for(int i = 0; i < 100; i++){
+				for(int j = 0; j < 20; j++){ //add 20 random numbers to the heap
+					int number = rand()%101;
+					tree->push(number); //add a random number between 0 and 100
+				}
+				tree->print();
+				delete tree;
+				tree = new RedBlackTree();
+			}
+		}
 		else {
 			cout << "not a valid input, please try again" << endl;
 		}
@@ -159,4 +171,5 @@ void printMenu(){ //print a command menu
 	cout << "  s, search\t\t - see how many of a number are stored" << endl;
 	cout << "  rm, del, remove\t - remove all of one number" << endl;
 	cout << "  c, clr, clear\t\t - clear the working tree" << endl;
+	cout << "  l, loop \t\t- generate and clear 100 trees (testing)" << endl;
 }

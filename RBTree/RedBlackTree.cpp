@@ -3,6 +3,7 @@
 #include "RedBlackTree.h"
 #include <iostream>
 #include <cstring>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -68,6 +69,7 @@ void RedBlackTree::printTree(Node* n, Branch* prev, bool isRight) {
     }
     showBranches(branch); //print the linked list of preceeding branches on this line
     cout << " " << n->data;
+    //if (n->parent) cout << " p=" << n->parent->data;
     if (n->color == RED) cout << " (R)" << endl;
     else if (n->color == BLACK) cout << " (B)" << endl;
     
@@ -116,12 +118,14 @@ void RedBlackTree::rotate(Node* P, bool right){
 		N = P->left;
 		P->parent = N;
 		P->left = N->right;
+		if (N->right) N->right->parent = P;
 		N->right = P;
 	}
 	else{
 		N = P->right;
 		P->parent = N;
 		P->right = N->left;
+		if (N->left) N->left->parent = P;
 		N->left = P;
 	}
 	
@@ -150,20 +154,20 @@ Node* RedBlackTree::sibling(Node* n){ //return the sibling
 void RedBlackTree::balanceIns(Node* n){
 	if (!n) return;
 	//print();
-	cout << "balancing" << endl;
+	//cout << "balancing" << endl;
 	if (n == root) { //case 1, inserting at the root
-		cout << "case 1" << endl; //set the color to black
+		//cout << "case 1" << endl; //set the color to black
 		n->color = BLACK;
 		return;
 	}
 	
 	else if (n->parent->color == BLACK){ //case 2, parent is black
-		//cout << "case 1" << endl; //nothing happens
+		//cout << "case 2" << endl; //nothing happens
 		return; 
 	}
 	
 	else if (uncle(n) && n->parent->color == RED && uncle(n)->color == RED){ //case 3, parent and uncle are both red
-		cout << "case 3" << endl;
+		//cout << "case 3" << endl;
 		n->parent->color = BLACK; //parent becomes black
 		n->parent->parent->color = RED; //grandfateher becomes red
 		uncle(n)->color = BLACK; //uncle becomes black
@@ -174,15 +178,18 @@ void RedBlackTree::balanceIns(Node* n){
 			&& (!uncle(n) || uncle(n)->color == BLACK) //Uncle is black (2)
 			&& (n == n->parent->left && n->parent == n->parent->parent->right //node is the right inside child (3)
 				|| n == n->parent->right && n->parent == n->parent->parent->left)){ //node is the left inside child (3)
-		cout << "case 4";
+		//cout << "case 4" << endl;
 		if (n == n->parent->left && n->parent == n->parent->parent->right){ //node is the inside grandchild to the right, case 4 
 			//rotate to the right through parent
+			//cout << "bkp 1" << endl;
+			//cout << "right rotation through " << n->parent->data << endl;
 			Node* P = n->parent;
 			rotate(P, RIGHT);
 			balanceIns(P);
 		}
 		else if (n == n->parent->right && n->parent == n->parent->parent->left){ //node is the inside grandchild to the left, case 4
 			//rotate to the left through parent
+			//cout << "bkp 2" << endl;
 			Node* P = n->parent;
 			rotate(P, LEFT);
 			balanceIns(P);
@@ -193,23 +200,33 @@ void RedBlackTree::balanceIns(Node* n){
 			&& (!uncle(n) || uncle(n)->color == BLACK) //uncle is black
 			&& (n == n->parent->left && n->parent == n->parent->parent->left || //left left or right right
 				n == n->parent->right && n->parent == n->parent->parent->right)) { //case 5
-		cout << "case 5 ";
+		//cout << "case 5, n=" << n->data;
+		//if (n->parent) cout << " p=" << n->parent->data;
+		//cout << endl;
 		if (n == n->parent->left && n->parent == n->parent->parent->left){ //node is the outside grandchild to the left, case 5 
+			//cout << "l-l" << endl;
+			
 			Node* G = n->parent->parent;
 			Node* P = n->parent;
 
 			G->color = RED; //change colors of parent and grandparent
 			P->color = BLACK;
+			
+			//print();
 
 			rotate(G, RIGHT); //rotate right through grandparent
 		}
 		else if (n == n->parent->right && n->parent == n->parent->parent->right){ //node is the outside grandchild to the right, case 5
+			//cout << "r-r" << endl;
+
 			Node* G = n->parent->parent;
 			Node* P = n->parent;
 			
 			G->color = RED; //change colors of parent and grandparent
 			P->color = BLACK;
-
+			
+			//print();
+			
 			rotate(G, LEFT); //rotate left through grandparent
 		}
 	}
@@ -230,7 +247,10 @@ void RedBlackTree::addAfter(Node* val, Node* &n, Node* parent){ //recursively ad
 	else {
 		n = val;
 		n->parent = parent;
+		//cout << "Inserting " << val->data << " and balancing" << endl;
 		balanceIns(n);
+		//cout << "completed tree:" << endl;
+		//print();
 	}
 }
 
@@ -257,7 +277,7 @@ int RedBlackTree::search(int val){ //return number of a data that exist in the t
 
 Node* RedBlackTree::inorderSuccessor(Node* n, bool right){ //pull the leftmost node out and return it
 	if(!n) return NULL;
-	cout << "n->data = " << n->data << endl;
+	//cout << "n->data = " << n->data << endl;
 	if (right) { //searching the right side so will be traversing left (next highest)
 		if (n->left) return inorderSuccessor(n->left, RIGHT);
 		else return n;
@@ -269,39 +289,73 @@ Node* RedBlackTree::inorderSuccessor(Node* n, bool right){ //pull the leftmost n
 }
 
 void RedBlackTree::balanceRem(Node* n){
-	S = sibling(n);
-	P = n->parent;
+	Node* S = sibling(n);
+	Node* P;
+	if (n->parent) P = N->parent;
 	
 	//case 4: parent is red and sibling is black with two black children
 	if (P && P->color == RED && S && S->color == BLACK &&
 			((!S->right || S->right->color == BLACK) &&  (!S->left || S->left->color == BLACK))) {
+		cout << "case 4" << endl;
 		S->color = RED;
 		P->color = BLACK;
 		return;
 	}
 	
 	//case 6: Sibling is black and outer child is red
-	if(S->color == BLACK && ((S == P->right && S->right && S->right->color == RED)
+	else if (S->color == BLACK && P && ((S == P->right && S->right && S->right->color == RED)
 				|| (S == P->left && S->left && S->left->color == RED))){
+		cout << "case 6" << endl;
 		Node* outer;
-		if (S == P->right) outer = S->right;
-		else outer = S->left;
-		rotate(P, LEFT);
+		//right
+		if (S == P->right){
+			outer = S->right;
+			rotate(P, LEFT);
+		}
+		//left
+		else { 
+			outer = S->left;
+			rotate(P, RIGHT);
+		}
+		P->color = BLACK;
 		outer->color = BLACK;
-		
 	}
-	
+	//case 3: Parent and Sibling are black, Sibling's children are black
+	else if (P && P->color == BLACK && S && S->color == BLACK &&
+			((!S->right || S->right->color == BLACK) &&  (!S->left || S->left->color == BLACK))){
+		S->color = RED;
+		balanceRem(P);
+	}
+	//case 5: Parent and Sibling are black, Sibling's outer child is black and inner child is red
+	else if(P && P->color == BLACK && S->color == BLACK &&
+			((S = P->right && (!S->right || S->right->color == BLACK) && S->left && S->left->color == RED)
+			|| (S = P->left && (!S->left || S->left->color == BLACK) && S->right && S->right->color == RED))) {
+		
+		S->color = RED;
+
+		if (S == P->right) {
+			S->left->color = BLACK;
+			rotate(S, RIGHT);
+		}
+		else {
+			S->right->color = BLACK;
+			rotate(S, LEFT);
+		}
+		balanceRem(N);
+	}
+
 }
 
 int RedBlackTree::removeN(Node* n, int val){ //remove the first of a certain data in the tree
 	if(!n) return 0;
 	if (n->data == val){ //node to delete
+		cout << "deleting" << endl;
 		
 		//simple cases:
 		
 		//simple case 1: n is the root and has two null children
 		if (n == root && !n->left && !n->right){
-			root = null;
+			root = NULL;
 		}
 
 		//find the inorder successor
@@ -351,16 +405,16 @@ int RedBlackTree::removeN(Node* n, int val){ //remove the first of a certain dat
 			balanceRem(N);
 			cout << "seg fault here" << endl;
 			if (N == N->parent->right){ //may cause a seg fault
-				
+				N->parent->right = N->left;
 			}
-			else if (N->parent
+			else if (N == N->parent->left){
+				N->parent->left = N->right;
+			}
 			cout << "wtf, no seg fault?" << endl;
 		}
 
 		//M is the node to be deleted from the tree
 		
-
-
 		return 1;
 	}
 	else if (n->data > val) return removeN(n->left, val);
