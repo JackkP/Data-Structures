@@ -1,7 +1,6 @@
 // Graph Creator Project, Jack Porter, July 2022
 
 #include "Graph.h"
-
 #include <cstring>
 #include <iostream>
 

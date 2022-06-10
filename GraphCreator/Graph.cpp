@@ -1,7 +1,6 @@
 // Graph class for Graph Creator Project, Jack Porter, July 2022
 // The implementation is horrible, but it was the last project for the class so what can I say...
 
-
 #include "Graph.h"
 #include <cstring>
 #include <iostream>
