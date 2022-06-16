@@ -39,7 +39,7 @@ void Graph::printAdj(){
 		for (int j = 0; j < 20; j++){
 			cout << "|";
 			char num[4];
-			itoa(adj[i][j], num, 10);
+			sprintf(num, "%d", adj[i][j]);
 			cout << num;
 			for (int i = 0; i < 4-strlen(num); i++) cout << " ";
 		}
